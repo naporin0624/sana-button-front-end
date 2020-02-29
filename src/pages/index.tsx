@@ -5,6 +5,7 @@ import { FixedHeader, PostArticles, UpdateLog, Header } from '../components';
 import { endpoint, endpointV1 } from '../constants';
 import { ButtonsBySlug } from '../lib/types';
 import { addDays } from 'date-fns';
+import { Provider } from '../store';
 
 function getDecodedTitleFromEncodedPath(path: string) {
   const matchResult = path.match(/\/api\/button\/(.*)\.json/);
@@ -40,7 +41,7 @@ export default function Index(props: Props) {
   ];
 
   return (
-    <>
+    <Provider>
       <FixedHeader />
       <Header />
       <UpdateLog logs={logs} />
@@ -48,7 +49,7 @@ export default function Index(props: Props) {
       {/* <AdArticles></AdArticles> */}
       {/* <Footer /> */}
       <PostArticles {...props}></PostArticles>
-    </>
+    </Provider>
   );
 }
 

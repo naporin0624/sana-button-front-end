@@ -23,6 +23,8 @@ rules:
   comma-dangle:
     - error
     - always-multiline
+  '@typescript-eslint/no-empty-function':
+    - off
   max-statements-per-line:
     - error
     - max: 1

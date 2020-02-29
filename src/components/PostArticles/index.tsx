@@ -5,9 +5,10 @@ import { PostArticle } from './PostArticle';
 type Props = {
   slugs: string[];
   buttonsBySlug: ButtonsBySlug;
+  handleButtonClick: Function;
 };
 
-export function PostArticles({ slugs, buttonsBySlug }: Props) {
+export function PostArticles({ slugs, buttonsBySlug, handleButtonClick }: Props) {
   return (
     <div>
       {slugs.map((slug) => (
@@ -16,6 +17,7 @@ export function PostArticles({ slugs, buttonsBySlug }: Props) {
           {...{
             slug,
             buttonsBySlug,
+            handleButtonClick,
           }}
         />
       ))}

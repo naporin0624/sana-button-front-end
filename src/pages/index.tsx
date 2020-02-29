@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { createRef, useEffect, useState } from 'react';
 
 import fetch from 'isomorphic-unfetch';
 import { FixedHeader, PostArticles, UpdateLog, Header } from '../components';
-import { endpoint, endpointV1 } from '../constants';
-import { ButtonsBySlug } from '../lib/types';
 import { addDays } from 'date-fns';
+import { endpoint, endpointSound, endpointV1 } from '../constants';
+import { AudioState, ButtonsBySlug } from '../lib/types';
 
 function getDecodedTitleFromEncodedPath(path: string) {
   const matchResult = path.match(/\/api\/button\/(.*)\.json/);
@@ -23,6 +23,11 @@ type Props = {
   buttonsBySlug: ButtonsBySlug;
 };
 
+const initialAudioState: AudioState = {
+  currentPlayingAudioName: undefined,
+  initializedAudioNames: new Set(),
+};
+
 export default function Index(props: Props) {
   const logs = [
     {
@@ -38,6 +43,24 @@ export default function Index(props: Props) {
       link: '#',
     },
   ];
+  const [state, setState] = useState<AudioState>(initialAudioState);
+  const { initializedAudioNames, currentPlayingAudioName } = state;
+  const playingRef = createRef<HTMLAudioElement>();
+  const handleButtonClick = (audioName: string) => {
+    if (playingRef.current) {
+      playingRef.current.pause();
+    }
+    setState(({ initializedAudioNames: prevInitializedAudioNames }) => ({
+      currentPlayingAudioName: audioName,
+      initializedAudioNames: prevInitializedAudioNames.add(audioName),
+    }));
+  };
+
+  useEffect(() => {
+    if (playingRef && playingRef.current) {
+      playingRef.current.play();
+    }
+  });
 
   return (
     <>
@@ -47,7 +70,14 @@ export default function Index(props: Props) {
       <hr style={{ margin: '1em 0' }} />
       {/* <AdArticles></AdArticles> */}
       {/* <Footer /> */}
-      <PostArticles {...props}></PostArticles>
+      <PostArticles {...props} handleButtonClick={handleButtonClick}></PostArticles>
+      {[...initializedAudioNames].map((audioName) => (
+        <audio
+          key={audioName}
+          ref={audioName === currentPlayingAudioName ? playingRef : undefined}
+          src={`${endpointSound}/${audioName}.mp3`}
+        />
+      ))}
     </>
   );
 }

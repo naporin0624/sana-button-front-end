@@ -36,7 +36,7 @@ export function AudioPlayer({ broadcasts, buttonInfoList, handleAudioPlay }: Pro
     if (!playingAudio) {
       return;
     }
-    playingAudio.audio.pause();
+    stopAudio(playingAudio.audio);
   }, [state]);
 
   const replay = useCallback(() => {

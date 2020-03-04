@@ -1,15 +1,14 @@
 import { FixedHeader } from '../FixedHeader';
 import { Header } from '../Header';
 import { UpdateLog } from '../UpdateLog';
-import React, { Fragment, useCallback, useContext, useMemo } from 'react';
-import { PostArticles } from '../PostArticles';
+import React, { useContext, useMemo } from 'react';
 import { BroadCaseLinkList } from '../BroadCastLinkList';
 import { AudioPlayer } from '../AudioPlayer';
 import { Container } from './styles';
 import { Broadcast, ButtonInfo, Site } from '../../lib/types';
 import { playAudio } from '../../lib/play-audio';
 import { AudioContext } from '../../contexts';
-import { Button } from '../Button';
+import { Broadcasts } from '../Broadcasts';
 
 export type AppProps = {
   sites: Site[];
@@ -30,14 +29,11 @@ export function App(props: AppProps) {
       })),
     [broadcasts],
   );
-  const handleAudioPlay = useCallback(
-    (broadcast: Broadcast, buttonId: number) => {
-      const fileName = buttonInfoList[buttonId]['file-name'];
+  const handleAudioPlay = (broadcast: Broadcast, buttonId: number) => {
+    const fileName = buttonInfoList[buttonId]['file-name'];
 
-      playAudio(state, setState, buttonId, fileName, broadcast.title, broadcast.streamId, broadcast.tweedId);
-    },
-    [state],
-  );
+    playAudio(state, setState, buttonId, fileName, broadcast.title, broadcast.streamId, broadcast.tweedId);
+  };
 
   return (
     <>
@@ -47,21 +43,7 @@ export function App(props: AppProps) {
         <UpdateLog logs={logs} />
         <hr style={{ margin: '1em 0' }} />
         {/* <AdArticles></AdArticles> */}
-        {broadcasts.map((broadcast) => (
-          <Fragment key={broadcast.id}>
-            <PostArticles broadcast={broadcast} buttonInfoList={buttonInfoList}>
-              {broadcast.buttonIds.map((buttonId) => (
-                <Button
-                  key={buttonId}
-                  id={buttonId}
-                  buttonInfo={buttonInfoList[buttonId]}
-                  handleClick={(id: number) => handleAudioPlay(broadcast, id)}
-                />
-              ))}
-            </PostArticles>
-            <hr style={{ margin: '1em 0' }} />
-          </Fragment>
-        ))}
+        <Broadcasts broadcasts={broadcasts} buttonInfoList={buttonInfoList} handleAudioPlay={handleAudioPlay} />
         <BroadCaseLinkList sites={sites} />
         {/* <Footer /> */}
       </Container>

@@ -13,6 +13,7 @@ export function playAudio(
   streamId?: string,
   tweetId?: string,
 ) {
+  console.log(state);
   const cache = state.cache[buttonId];
   const audio = cache?.audio || new Audio(`${endpointSound}/${fileName}.mp3`);
 
